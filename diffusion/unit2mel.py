@@ -146,12 +146,12 @@ class Unit2Mel(nn.Module):
         out_channels=out_dims,
         block_out_channels=block_out_channels,
         norm_num_groups=8,
-        # cross_attention_dim = block_out_channels,
-        cross_attention_dim = out_dims,
+        cross_attention_dim = block_out_channels,
+        # cross_attention_dim = out_dims,
         attention_head_dim = n_heads,
         only_cross_attention = True,
         layers_per_block = n_layers,
-        addition_embed_type='text',
+        # addition_embed_type='text',
         resnet_time_scale_shift='scale_shift'), out_dims=out_dims)
 
     def forward(self, units, f0, volume, reference_audio_mel,aug_shift=None,
@@ -172,7 +172,7 @@ class Unit2Mel(nn.Module):
         if self.aug_shift_embed is not None and aug_shift is not None:
             x = x + self.aug_shift_embed(aug_shift / 5)
         # x = self.mrte(x, reference_audio_mel)
-        x = self.decoder(x, gt_spec=gt_spec,reference_mel = reference_audio_mel, infer=infer, infer_speedup=infer_speedup, method=method, k_step=k_step,
+        x = self.decoder(x, gt_spec=gt_spec, infer=infer, infer_speedup=infer_speedup, method=method, k_step=k_step,
                          use_tqdm=use_tqdm)
 
         return x
